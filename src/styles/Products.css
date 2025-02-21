@@ -1,0 +1,5 @@
+.product-card {
+    position: relative;
+    z-index: 1; /* Menor que el menú */
+  }
+  

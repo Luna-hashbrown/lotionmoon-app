@@ -1,0 +1,49 @@
+.menu-toggle {
+    position: absolute;
+    top: 20px;
+    left: 20px; 
+    z-index: 1000;
+  }
+  
+  .sidebar-menu {
+    position: fixed;
+    z-index: 1000; /* Mayor que Bootstrap (por defecto usa 1000 en modals) */
+    width: 250px; /* Ajusta el ancho según tu diseño */
+    height: 100vh;
+   background-color: black;
+    left: -250px;
+    top: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar-menu.open {
+    left: 0; 
+  }
+  
+  .sidebar-menu ul {
+    padding: 0; 
+  }
+  
+  .sidebar-menu .nav-link {
+    color: white;
+    text-decoration: none; 
+    font-size: 18px;
+    display: block; 
+    margin: 15px 0;
+  }
+  
+  .sidebar-menu .nav-link:hover {
+    color: #ddd; 
+  }
+  
+  .icon-white {
+    color: white ;
+  }
+  
+  .icon-black {
+    color: black; 
+  }
+  
+  
