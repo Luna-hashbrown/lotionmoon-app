@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Menu.css';
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null); 
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div>
+    <div ref={menuRef}>
       <button className="btn menu-toggle" onClick={toggleMenu}>
         {isOpen ? <i className="fas fa-times icon-white"></i> : <i className="fas fa-bars icon-black"></i>}
       </button>
@@ -34,7 +51,3 @@ const Menu = () => {
 };
 
 export default Menu;
-
-
-
-

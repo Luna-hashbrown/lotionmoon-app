@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { Card, Button, Container, Row, Col, Form, Modal } from "react-bootstrap";
 import '../styles/Products.css';
 
 const Products = () => {
+  const [show, setShow] = useState(false);
+  const [formData, setFormData] = useState({ id: null, nameProduct: "", price: "", brand: "", description: "" });
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -21,10 +23,41 @@ const Products = () => {
       image: "https://m.media-amazon.com/images/I/51RCRxeAjCL._AC_UF1000,1000_QL80_.jpg"
     }
   ]);
+  
+  const handleClose = () => setShow(false);
+  const handleShow = (client = { id: null, name: "", email: "" }) => {
+    setFormData(client);
+    setShow(true);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    if (formData.id) {
+      
+      setProducts(products.map(c => c.id === formData.id ? formData : c));
+    } else {
+      setProducts([...products, { ...formData, id: Date.now() }]);
+    }
+    handleClose();
+  };
 
   return (
     <Container className="mt-4">
-      <h1 className="text-center mb-4">Catálogo de Productos</h1>
+      <Row className="align-items-center mb-4">
+        <Col>
+          <h1>Catálogo de Productos</h1>
+        </Col>
+        <Col className="text-end">
+          <Button variant="success" className="rounded-circle" onClick={() => handleShow()}>
+            <i className="fas fa-plus"></i>
+          </Button>
+        </Col>
+      </Row>
+
+      {/* Fila de productos */}
       <Row>
         {products.map(product => (
           <Col key={product.id} md={4} className="mb-4">
@@ -41,6 +74,35 @@ const Products = () => {
           </Col>
         ))}
       </Row>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{formData.id ? "Editar Cliente" : "Agregar Cliente"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Product Name</Form.Label>
+              <Form.Control type="text" name="nameProduct" value={formData.nameProduct} onChange={handleChange} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Price</Form.Label>
+              <Form.Control type="number" name="price" value={formData.price} onChange={handleChange} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Brand</Form.Label>
+              <Form.Control type="text" name="brand" value={formData.brand} onChange={handleChange} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control type="text" name="description" value={formData.description} onChange={handleChange} />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+          <Button variant="primary" onClick={handleSubmit}>Guardar</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
