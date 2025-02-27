@@ -85,9 +85,9 @@ const Inventory = () => {
           {inventory.map(item => (
             <tr key={item._id}>
               <td>{item.stock}</td>
-              <td>{item.stockMin}</td>
-              <td>{item.stockMax}</td>
-              <td>{availableProducts.find(p => p._id === item.productId)?.name || "Desconocido"}</td>
+              <td>{item.minimunStock}</td>
+              <td>{item.maximunStock}</td>
+              <td>{availableProducts.find(p => p._id === item.product)?.name || "Desconocido"}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(item)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(item._id)}>Eliminar</Button>
@@ -105,7 +105,7 @@ const Inventory = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Producto</Form.Label>
-              <Form.Select name="productId" value={formData.productId} onChange={handleChange}>
+              <Form.Select name="productId" value={formData.product} onChange={handleChange}>
                 <option value="">Seleccione un producto</option>
                 {availableProducts.map(product => (
                   <option key={product._id} value={product._id}>{product.name}</option>
@@ -118,11 +118,11 @@ const Inventory = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock Mínimo</Form.Label>
-              <Form.Control type="number" name="stockMin" value={formData.stockMin} onChange={handleChange} />
+              <Form.Control type="number" name="stockMin" value={formData.minimunStock} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock Máximo</Form.Label>
-              <Form.Control type="number" name="stockMax" value={formData.stockMax} onChange={handleChange} />
+              <Form.Control type="number" name="stockMax" value={formData.maximunStock} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
