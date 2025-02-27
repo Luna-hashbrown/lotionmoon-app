@@ -75,7 +75,7 @@ const Inventory = () => {
         <tbody>
           {inventory.map(item => (
             <tr key={item._id}>
-              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Producto Eliminado"}</td>
+              <td>{item.product.productName || "Producto Eliminado"}</td>
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
@@ -99,7 +99,7 @@ const Inventory = () => {
               <Form.Select name="product" value={formData.product} onChange={handleChange}>
                 <option value="">Seleccione un producto</option>
                 {availableProducts.map(product => (
-                  <option key={product._id} value={product._id}>{product.name}</option>
+                  <option key={product._id} value={product._id}>{product.productName}</option>
                 ))}
               </Form.Select>
             </Form.Group>

@@ -12,9 +12,9 @@ const Sales = () => {
     id: null,
     creationDate: "",
     total: "",
-    clientid: "",
-    employeeid: "",
-    inventoryid: "",
+    clientID: "",
+    employeeID: "",
+    inventoryID: "",
   });
 
   useEffect(() => {
@@ -30,6 +30,11 @@ const Sales = () => {
         setClients(Array.isArray(clientsData) ? clientsData : []);
         setEmployees(Array.isArray(employeesData) ? employeesData : []);
         setInventories(Array.isArray(inventoriesData) ? inventoriesData : []);
+
+        console.log("Sales data:", salesData);
+      console.log("Clients data:", clientsData);
+      console.log("Employees data:", employeesData);
+      console.log("Inventories data:", inventoriesData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -38,10 +43,10 @@ const Sales = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (sale = { id: null, creationDate: "", total: "", clientid: "", employeeid: "", inventoryid: "" }) => {
+  const handleShow = (sale = { _id: null, creationDate: "", total: "", clientID: "", employeeID: "", inventoryID: "" }) => {
     setFormData(sale);
     setShow(true);
-  };
+  };  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,7 +54,7 @@ const Sales = () => {
 
   const handleSubmit = () => {
     if (formData.id) {
-      setSales(sales.map(sale => sale.id === formData.id ? formData : sale));
+      setSales(sales.map(sale => sale._id === formData.id ? formData : sale));
     } else {
       setSales([...sales, { ...formData, id: Date.now() }]);
     }
@@ -57,7 +62,7 @@ const Sales = () => {
   };
 
   const handleDelete = (id) => {
-    setSales(sales.filter(sale => sale.id !== id));
+    setSales(sales.filter(sale => sale._id !== id));
   };
 
   return (
@@ -78,15 +83,28 @@ const Sales = () => {
         </thead>
         <tbody>
           {sales.map(sale => (
-            <tr key={sale.id}>
-              <td>{sale.id}</td>
+            <tr key={sale._id}>
+              <td>{sale._id}</td>
               <td>{sale.creationDate}</td>
               <td>{sale.total}</td>
-              <td>{clients.find(c => c.id === sale.clientid)?.name || "Desconocido"}</td>
-              <td>{employees.find(e => e.id === sale.employeeid)?.name || "Desconocido"}</td>
-              <td>{inventories.find(i => i.id === sale.inventoryid)?.name || "Desconocido"}</td>
+              <td>{clients.find(c => c._id === sale.clientID)?.clientName || "Desconocido"}</td>
+              <td>{employees.find(e => e._id === sale.employeeID)?.employeeName || "Desconocido"}</td>
               <td>
-                <Button variant="warning" size="sm" onClick={() => handleShow(sale)}>Editar</Button>
+                {sale.products?.length > 0 ? (
+                  sale.products.map((p, index) => {
+                    const inventory = inventories.find(i => i._id === p.inventoryID);
+                    return (
+                      <div key={index}>
+                        {inventory?.product?.productName || "Desconocido"}
+                      </div>
+                    );
+                  })
+                ) : (
+                  "Sin productos"
+                )}
+              </td>
+              <td>
+                <Button variant="warning" sizes="sm" onClick={() => handleShow(sale)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(sale.id)}>Eliminar</Button>
               </td>
             </tr>
@@ -110,31 +128,44 @@ const Sales = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Cliente</Form.Label>
-              <Form.Select name="clientid" value={formData.clientid} onChange={handleChange}>
+              <Form.Select name="clientID" value={formData.clientID} onChange={handleChange}>
                 <option value="">Seleccione un cliente</option>
                 {clients.map(client => (
-                  <option key={client.id} value={client.id}>{client.name}</option>
+                  <option key={client.clientID} value={client.clientID}>{client.clientName}</option>
                 ))}
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Empleado</Form.Label>
-              <Form.Select name="employeeid" value={formData.employeeid} onChange={handleChange}>
+              <Form.Select name="employeeID" value={formData.employeeID} onChange={handleChange}>
                 <option value="">Seleccione un empleado</option>
                 {employees.map(employee => (
-                  <option key={employee.id} value={employee.id}>{employee.name}</option>
+                  <option key={employee._id} value={employee.id}>{employee.employeeName}</option>
                 ))}
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Inventario</Form.Label>
-              <Form.Select name="inventoryid" value={formData.inventoryid} onChange={handleChange}>
+            <Form.Label>Inventario</Form.Label>
+            <Form.Select
+                name="inventoryID"
+                multiple
+                value={formData.inventoryIDs || []} 
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    inventoryIDs: [...e.target.selectedOptions].map(option => option.value)
+                  })
+                }
+              >
                 <option value="">Seleccione un inventario</option>
                 {inventories.map(inventory => (
-                  <option key={inventory.id} value={inventory.id}>{inventory.name}</option>
+                  <option key={inventory._id} value={inventory._id}>
+                    {inventory.product?.productName || "Desconocido"}
+                  </option>
                 ))}
-              </Form.Select>
-            </Form.Group>
+            </Form.Select>
+          </Form.Group>
+
           </Form>
         </Modal.Body>
         <Modal.Footer>
