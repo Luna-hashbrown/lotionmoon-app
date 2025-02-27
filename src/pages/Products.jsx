@@ -6,7 +6,7 @@ import { getProducts, createProduct, updateProduct, deleteProduct} from "../serv
 
 const Products = () => {
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({ id: null, nameProduct: "", price: "", brand: "", description: "" });
+  const [formData, setFormData] = useState({ id: null, productName: "", price: "", brand: "", descripcion: "" });
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const Products = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (product = { id: null, nameProduct: "", price: "", brand: "", description: "" }) => {
+  const handleShow = (product = { id: null, productName: "", price: "", brand: "", descripcion: "" }) => {
     setFormData(product);
     setShow(true);
   };
@@ -75,9 +75,9 @@ const Products = () => {
             <Card className="product-card">
               <Card.Img variant="top" src={product.image} style={{ width: "150px", height: "150px", objectFit: "cover", margin: "auto" }} />
               <Card.Body>
-                <Card.Title>{product.nameProduct}</Card.Title>
+                <Card.Title>{product.productName}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{product.brand}</Card.Subtitle>
-                <Card.Text>{product.description}</Card.Text>
+                <Card.Text>{product.descripcion}</Card.Text>
                 <h5>${product.price} MXN</h5>
                 <Button variant="primary">Comprar</Button>
                 <Button variant="danger" onClick={() => handleDelete(product._id)}>Eliminar</Button>
@@ -95,7 +95,7 @@ const Products = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Product Name</Form.Label>
-              <Form.Control type="text" name="nameProduct" value={formData.nameProduct} onChange={handleChange} />
+              <Form.Control type="text" name="productName" value={formData.productName} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Price</Form.Label>
@@ -107,7 +107,7 @@ const Products = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
-              <Form.Control type="text" name="description" value={formData.description} onChange={handleChange} />
+              <Form.Control type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>

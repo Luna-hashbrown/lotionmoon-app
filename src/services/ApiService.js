@@ -15,7 +15,7 @@ export const getClients = async () => {
 };
 
 export const createClient = async (clientData) => {
-  const response = await axios.post(`${API_BASE_URL}/cliente-create`, clientData);
+  const response = await axios.post(`${API_BASE_URL}/client-create`, clientData);
   return response.data.client;
 };
 
@@ -54,7 +54,7 @@ export const createProduct = async (product) => {
 // Actualizar un producto por su ID
 export const updateProduct = async (id, product) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/product-update/${id}`, product);
+    const response = await axios.put(`${API_BASE_URL}/products-update/${id}`, product);
     return response.data;
   } catch (error) {
     console.error("Error actualizando producto:", error);
@@ -65,7 +65,7 @@ export const updateProduct = async (id, product) => {
 // Eliminar un producto por su ID
 export const deleteProduct = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/product-delete/${id}`);
+    const response = await axios.delete(`${API_BASE_URL}/products-delete/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error eliminando producto:", error);
@@ -76,17 +76,17 @@ export const deleteProduct = async (id) => {
 //ENPOINTS INVENTARIO
 export const getInventory = async () => {
   const response = await axios.get(`${API_BASE_URL}/inventory`);
-  return response.data.clients;
+  return response.data;
 };
 
 export const createInventory = async (clientData) => {
   const response = await axios.post(`${API_BASE_URL}/inventory-create`, clientData);
-  return response.data.client;
+  return response.data;
 };
 
 export const updateInventory = async (idClient, clientData) => {
   const response = await axios.put(`${API_BASE_URL}/inventory-update/${idClient}`, clientData);
-  return response.data.client;
+  return response.data;
 };
 
 export const deleteInventory = async (idClient) => {
@@ -95,15 +95,15 @@ export const deleteInventory = async (idClient) => {
 
 export const getEmployees = async () => {
   const response = await axios.get(`${API_BASE_URL}/employee`);
-  return response.data.employees;
+  return response.data;
 };
 
 export const getSales = async () => {
   const response = await axios.get(`${API_BASE_URL}/sale`);
-  return response.data.sales;
+  return response.data;
 }
 
 export const getPurchases = async () => {
   const response = await axios.get(`${API_BASE_URL}/purchase`);
-  return response.data.purchases;
+  return response.data;
 }
