@@ -1,34 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getSales } from "../services/ApiService";
+import { getSales, getClients, getEmployees, getInventory } from "../services/ApiService";
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [inventories, setInventories] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     id: null,
     creationDate: "",
     total: "",
-    clientID: "",  
-    employeeID: "", 
-    inventoryID: "",
+    clientid: "",
+    employeeid: "",
+    inventoryid: "",
   });
 
   useEffect(() => {
-    const fetchSales = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getSales();
-        console.log("Datos recibidos de la API:", data);
-        setSales(Array.isArray(data) ? data : []);
+        const [salesData, clientsData, employeesData, inventoriesData] = await Promise.all([
+          getSales(),
+          getClients(),
+          getEmployees(),
+          getInventory(),
+        ]);
+        setSales(Array.isArray(salesData) ? salesData : []);
+        setClients(Array.isArray(clientsData) ? clientsData : []);
+        setEmployees(Array.isArray(employeesData) ? employeesData : []);
+        setInventories(Array.isArray(inventoriesData) ? inventoriesData : []);
       } catch (error) {
-        console.error("Error fetching sales:", error);
+        console.error("Error fetching data:", error);
       }
     };
-    fetchSales();
+    fetchData();
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (sale = { id: null, creationDate: "", total: "", clientID: "", employeeID: "", inventoryID: "" }) => {
+  const handleShow = (sale = { id: null, creationDate: "", total: "", clientid: "", employeeid: "", inventoryid: "" }) => {
     setFormData(sale);
     setShow(true);
   };
@@ -52,17 +62,17 @@ const Sales = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center">Gestión de Ventas</h1>
+      <h1 className="text-center">Gestión de Ventas</h1>
       <Button className="mb-3" onClick={() => handleShow()}>Agregar Venta</Button>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Fecha de Creación</th>
+            <th>Fecha de Creación</th>
             <th>Total</th>
-            <th>ID Cliente</th>
-            <th>ID Empleado</th>
-            <th>ID Inventario</th>
+            <th>Cliente</th>
+            <th>Empleado</th>
+            <th>Inventario</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -72,9 +82,9 @@ const Sales = () => {
               <td>{sale.id}</td>
               <td>{sale.creationDate}</td>
               <td>{sale.total}</td>
-              <td>{sale.clientID}</td>     {/* 🔄 Cambio de "sale.clientid" a "sale.clientID" */}
-              <td>{sale.employeeID}</td>   {/* 🔄 Cambio de "sale.employeeid" a "sale.employeeID" */}
-              <td>{sale.inventoryID}</td>  {/* 🔄 Cambio de "sale.inventoryid" a "sale.inventoryID" */}
+              <td>{clients.find(c => c.id === sale.clientid)?.name || "Desconocido"}</td>
+              <td>{employees.find(e => e.id === sale.employeeid)?.name || "Desconocido"}</td>
+              <td>{inventories.find(i => i.id === sale.inventoryid)?.name || "Desconocido"}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(sale)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(sale.id)}>Eliminar</Button>
@@ -91,7 +101,7 @@ const Sales = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Fecha de Creación</Form.Label>
+              <Form.Label>Fecha de Creación</Form.Label>
               <Form.Control type="date" name="creationDate" value={formData.creationDate} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -99,16 +109,31 @@ const Sales = () => {
               <Form.Control type="number" step="0.01" name="total" value={formData.total} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>ID Cliente</Form.Label>
-              <Form.Control type="number" name="clientID" value={formData.clientID} onChange={handleChange} />
+              <Form.Label>Cliente</Form.Label>
+              <Form.Select name="clientid" value={formData.clientid} onChange={handleChange}>
+                <option value="">Seleccione un cliente</option>
+                {clients.map(client => (
+                  <option key={client.id} value={client.id}>{client.name}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>ID Empleado</Form.Label>
-              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
+              <Form.Label>Empleado</Form.Label>
+              <Form.Select name="employeeid" value={formData.employeeid} onChange={handleChange}>
+                <option value="">Seleccione un empleado</option>
+                {employees.map(employee => (
+                  <option key={employee.id} value={employee.id}>{employee.name}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>ID Inventario</Form.Label>
-              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
+              <Form.Label>Inventario</Form.Label>
+              <Form.Select name="inventoryid" value={formData.inventoryid} onChange={handleChange}>
+                <option value="">Seleccione un inventario</option>
+                {inventories.map(inventory => (
+                  <option key={inventory.id} value={inventory.id}>{inventory.name}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
