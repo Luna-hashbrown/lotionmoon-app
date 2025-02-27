@@ -75,7 +75,7 @@ const Inventory = () => {
         <tbody>
           {inventory.map(item => (
             <tr key={item._id}>
-              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Producto Eliminado"}</td>
+              <td>{item.product.productName || "Producto Eliminado"}</td>
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
