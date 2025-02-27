@@ -6,12 +6,12 @@ const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
-    purchaseID: null,
+    id: null,
     creationPurchase: "",
     total: "",
     provider: "",
-    employeeID: "",
-    inventoryID: "",
+    employeeid: "",
+    inventoryid: "",
   });
 
   useEffect(() => {
@@ -28,14 +28,7 @@ const Purchases = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (purchase = {
-    purchaseID: null,
-    creationPurchase: "",
-    total: "",
-    provider: "",
-    employeeID: "",
-    inventoryID: "",
-  }) => {
+  const handleShow = (purchase = { id: null, creationPurchase: "", total: "", provider: "", employeeid: "", inventoryid: "" }) => {
     setFormData(purchase);
     setShow(true);
   };
@@ -43,7 +36,7 @@ const Purchases = () => {
   const handleChange = (e) => {
     let { name, value } = e.target;
     if (name === "creationPurchase") {
-      value = value.split("T")[0]; // Asegura que solo tome la fecha sin la hora
+      value = value.split("T")[0];
     }
     setFormData({ ...formData, [name]: value });
   };
@@ -51,22 +44,20 @@ const Purchases = () => {
   const handleSubmit = () => {
     const formattedData = {
       ...formData,
-      creationPurchase: formData.creationPurchase.split("T")[0], // Elimina la hora antes de guardar
+      creationPurchase: formData.creationPurchase.split("T")[0],
     };
 
-    if (formattedData.purchaseID) {
-      setPurchases(purchases.map(purchase => 
-        purchase.purchaseID === formattedData.purchaseID ? formattedData : purchase
-      ));
+    if (formattedData.id) {
+      setPurchases(purchases.map(purchase => purchase.id === formattedData.id ? formattedData : purchase));
     } else {
-      setPurchases([...purchases, { ...formattedData, purchaseID: Date.now() }]);
+      setPurchases([...purchases, { ...formattedData, id: Date.now() }]);
     }
 
     handleClose();
   };
 
   const handleDelete = (id) => {
-    setPurchases(purchases.filter(purchase => purchase.purchaseID !== id));
+    setPurchases(purchases.filter(purchase => purchase.id !== id));
   };
 
   return (
@@ -87,16 +78,16 @@ const Purchases = () => {
         </thead>
         <tbody>
           {purchases.map(purchase => (
-            <tr key={purchase.purchaseID}>
-              <td>{purchase.purchaseID}</td>
+            <tr key={purchase.id}>
+              <td>{purchase.id}</td>
               <td>{purchase.creationPurchase}</td>
               <td>{purchase.total}</td>
               <td>{purchase.provider}</td>
-              <td>{purchase.employeeID}</td>
-              <td>{purchase.inventoryID}</td>
+              <td>{purchase.employeeid}</td>
+              <td>{purchase.inventoryid}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(purchase)}>Editar</Button>
-                <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(purchase.purchaseID)}>Eliminar</Button>
+                <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(purchase.id)}>Eliminar</Button>
               </td>
             </tr>
           ))}
@@ -105,7 +96,7 @@ const Purchases = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{formData.purchaseID ? "Editar Compra" : "Agregar Compra"}</Modal.Title>
+          <Modal.Title>{formData.id ? "Editar Compra" : "Agregar Compra"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -123,11 +114,11 @@ const Purchases = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Empleado</Form.Label>
-              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
+              <Form.Control type="number" name="employeeid" value={formData.employeeid} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Inventario</Form.Label>
-              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
+              <Form.Control type="number" name="inventoryid" value={formData.inventoryid} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>

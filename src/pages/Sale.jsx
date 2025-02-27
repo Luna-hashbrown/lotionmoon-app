@@ -9,9 +9,9 @@ const Sales = () => {
     id: null,
     creationDate: "",
     total: "",
-    clientID: "",  
-    employeeID: "", 
-    inventoryID: "",
+    clientid: "",  
+    employeeid: "", 
+    inventoryid: "",
   });
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Sales = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (sale = { id: null, creationDate: "", total: "", clientID: "", employeeID: "", inventoryID: "" }) => {
+  const handleShow = (sale = { id: null, creationDate: "", total: "", clientid: "", employeeid: "", inventoryid: "" }) => {
     setFormData(sale);
     setShow(true);
   };
@@ -72,9 +72,9 @@ const Sales = () => {
               <td>{sale.id}</td>
               <td>{sale.creationDate}</td>
               <td>{sale.total}</td>
-              <td>{sale.clientID}</td>     {/* 🔄 Cambio de "sale.clientid" a "sale.clientID" */}
-              <td>{sale.employeeID}</td>   {/* 🔄 Cambio de "sale.employeeid" a "sale.employeeID" */}
-              <td>{sale.inventoryID}</td>  {/* 🔄 Cambio de "sale.inventoryid" a "sale.inventoryID" */}
+              <td>{sale.clientid}</td>
+              <td>{sale.employeeid}</td>
+              <td>{sale.inventoryid}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(sale)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(sale.id)}>Eliminar</Button>
@@ -100,15 +100,15 @@ const Sales = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Cliente</Form.Label>
-              <Form.Control type="number" name="clientID" value={formData.clientID} onChange={handleChange} />
+              <Form.Control type="number" name="clientid" value={formData.clientid} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Empleado</Form.Label>
-              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
+              <Form.Control type="number" name="employeeid" value={formData.employeeid} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Inventario</Form.Label>
-              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
+              <Form.Control type="number" name="inventoryid" value={formData.inventoryid} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
