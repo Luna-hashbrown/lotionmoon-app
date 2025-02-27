@@ -1,49 +1,76 @@
+.menu-container {
+  position: relative;
+}
+
+.sidebar-menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: 4px 0px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  border-radius: 0px 12px 12px 0px;
+}
+
+.sidebar-menu.open {
+  transform: translateX(0);
+}
+
 .menu-toggle {
-    position: absolute;
-    top: 20px;
-    left: 20px; 
-    z-index: 1000;
-  }
-  
-  .sidebar-menu {
-    position: fixed;
-    z-index: 1000; /* Mayor que Bootstrap (por defecto usa 1000 en modals) */
-    width: 250px; /* Ajusta el ancho según tu diseño */
-    height: 100vh;
-   background-color: black;
-    left: -250px;
-    top: 0;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    transition: left 0.3s ease;
-  }
-  
-  .sidebar-menu.open {
-    left: 0; 
-  }
-  
-  .sidebar-menu ul {
-    padding: 0; 
-  }
-  
-  .sidebar-menu .nav-link {
-    color: white;
-    text-decoration: none; 
-    font-size: 18px;
-    display: block; 
-    margin: 15px 0;
-  }
-  
-  .sidebar-menu .nav-link:hover {
-    color: #ddd; 
-  }
-  
-  .icon-white {
-    color: white ;
-  }
-  
-  .icon-black {
-    color: black; 
-  }
-  
-  
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle:hover {
+  background: #f8f9fa;
+}
+
+.list-unstyled {
+  padding: 0;
+  margin-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  background: #f1f1f1;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #333;
+}
+
+.close-button:hover {
+  color: #777;
+}
