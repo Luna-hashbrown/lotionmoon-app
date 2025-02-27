@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Form, Modal } from "react-bootstrap";
+import { Table, Button, Form, Modal, Alert } from "react-bootstrap";
 import { getClients, createClient, updateClient, deleteClient } from "../services/ApiService";
 
 const Clients = () => {
   const [clients, setClients] = useState([]);
   const [show, setShow] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // Estado para manejar errores
   const [formData, setFormData] = useState({ _id: null, clientName: "", email: "" });
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const Clients = () => {
       setClients(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching clients:", error);
+      setErrorMessage("Error al cargar la lista de clientes.");
     }
   };
 
@@ -24,6 +26,7 @@ const Clients = () => {
   const handleShow = (client = { _id: null, clientName: "", email: "" }) => {
     setFormData(client);
     setShow(true);
+    setErrorMessage(""); // Limpiar errores al abrir el modal
   };
 
   const handleChange = (e) => {
@@ -41,6 +44,7 @@ const Clients = () => {
       handleClose();
     } catch (error) {
       console.error("Error saving client:", error);
+      setErrorMessage("No se pudo guardar el cliente. Verifica los datos e inténtalo de nuevo.");
     }
   };
 
@@ -50,12 +54,20 @@ const Clients = () => {
       fetchClients();
     } catch (error) {
       console.error("Error deleting client:", error);
+      setErrorMessage("No se pudo eliminar el cliente. Inténtalo de nuevo más tarde.");
     }
   };
 
   return (
     <div className="container mt-4">
       <h1 className="text-center">Gestión de Clientes</h1>
+
+      {errorMessage && (
+        <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
+          {errorMessage}
+        </Alert>
+      )}
+
       <Button className="mb-3" onClick={() => handleShow()}>Agregar Cliente</Button>
       <Table striped bordered hover>
         <thead>
