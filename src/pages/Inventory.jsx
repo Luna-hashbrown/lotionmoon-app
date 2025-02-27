@@ -65,20 +65,20 @@ const Inventory = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>Producto</th>
             <th>Stock</th>
             <th>Stock Mínimo</th>
             <th>Stock Máximo</th>
-            <th>Producto</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {inventory.map(item => (
             <tr key={item._id}>
+              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Producto Eliminado"}</td>
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
-              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Desconocido"}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(item)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(item._id)}>Eliminar</Button>
