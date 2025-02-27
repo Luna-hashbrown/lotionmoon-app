@@ -99,7 +99,7 @@ const Inventory = () => {
               <Form.Select name="product" value={formData.product} onChange={handleChange}>
                 <option value="">Seleccione un producto</option>
                 {availableProducts.map(product => (
-                  <option key={product._id} value={product._id}>{product.name}</option>
+                  <option key={product._id} value={product._id}>{product.productName}</option>
                 ))}
               </Form.Select>
             </Form.Group>
