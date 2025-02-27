@@ -99,7 +99,7 @@ export const deleteInventory = async (idClient) => {
 
 export const getSales = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/sale`);
+    const response = await axios.get(`${API_BASE_URL}/sales`);
     return response.data;
   } catch (error) {
     console.error("Error obteniendo ventas:", error);
@@ -109,7 +109,7 @@ export const getSales = async () => {
 
 export const createSale = async (saleData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/sale-create`, saleData);
+    const response = await axios.post(`${API_BASE_URL}/sales-create`, saleData);
     return response.data;
   } catch (error) {
     console.error("Error creando venta:", error);
@@ -119,7 +119,7 @@ export const createSale = async (saleData) => {
 
 export const updateSaleById = async (idSale, saleData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/sale-update/${idSale}`, saleData);
+    const response = await axios.put(`${API_BASE_URL}/sales-update/${idSale}`, saleData);
     return response.data;
   } catch (error) {
     console.error("Error actualizando venta:", error);
@@ -129,7 +129,7 @@ export const updateSaleById = async (idSale, saleData) => {
 
 export const deleteSale = async (idSale) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/sale-delete/${idSale}`);
+    const response = await axios.delete(`${API_BASE_URL}/sales-delete/${idSale}`);
     return response.data;
   } catch (error) {
     console.error("Error eliminando venta:", error);
@@ -184,7 +184,7 @@ export const deletePurchase = async (idPurchase) => {
 
 export const getEmployees = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/employee`);
+    const response = await axios.get(`${API_BASE_URL}/employees`);
     return response.data;
   } catch (error) {
     console.error("Error obteniendo empleados:", error);
@@ -194,7 +194,7 @@ export const getEmployees = async () => {
 
 export const getEmployeeById = async (id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/employee/${id}`);
+    const response = await axios.get(`${API_BASE_URL}/employees/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error obteniendo empleado:", error);
@@ -204,7 +204,7 @@ export const getEmployeeById = async (id) => {
 
 export const createEmployee = async (employeeData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/employee-create`, employeeData);
+    const response = await axios.post(`${API_BASE_URL}/employees-create`, employeeData);
     return response.data;
   } catch (error) {
     console.error("Error creando empleado:", error);
@@ -214,7 +214,7 @@ export const createEmployee = async (employeeData) => {
 
 export const updateEmployee = async (id, employeeData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/employee-update/${id}`, employeeData);
+    const response = await axios.put(`${API_BASE_URL}/employees-update/${id}`, employeeData);
     return response.data;
   } catch (error) {
     console.error("Error actualizando empleado:", error);
@@ -224,7 +224,7 @@ export const updateEmployee = async (id, employeeData) => {
 
 export const deleteEmployee = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/employee-delete/${id}`);
+    const response = await axios.delete(`${API_BASE_URL}/employees-delete/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error eliminando empleado:", error);
