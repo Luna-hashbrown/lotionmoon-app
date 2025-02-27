@@ -1,40 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getInventory, createInventory, updateInventory, deleteInventory } from "../services/ApiService";
-import { getProducts } from "../services/ProductService"; // Asegúrate de tener este servicio
+import { getInventory, createInventory, updateInventory, deleteInventory, getProducts } from "../services/ApiService";
 
 const Inventory = () => {
-  const [products, setProducts] = useState([]);
   const [inventory, setInventory] = useState([]);
-  const [availableProducts, setAvailableProducts] = useState([]); // Lista de productos disponibles
+  const [availableProducts, setAvailableProducts] = useState([]);
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({ stock: "", minimunStock: "", maximunStock: "" , product: "" });
+  const [formData, setFormData] = useState({ stock: "", minimunStock: "", maximunStock: "", product: "" });
 
   useEffect(() => {
-    const fetchInventory = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getInventory();
-        setInventory(data || []);
-      } catch (error) {
-        console.error("Error al obtener inventario:", error);
-      }
-    };
+        const inventoryData = await getInventory();
+        setInventory(inventoryData || []);
 
-    const fetchProducts = async () => {
-      try {
         const productsData = await getProducts();
         setAvailableProducts(productsData || []);
       } catch (error) {
-        console.error("Error al obtener productos:", error);
+        console.error("Error al obtener datos:", error);
       }
     };
 
-    fetchInventory();
-    fetchProducts();
+    fetchData();
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (item = { stock: "", minimunStock: "", maximunStock: "" , product: "" }) => {
+  const handleShow = (item = { stock: "", minimunStock: "", maximunStock: "", product: "" }) => {
     setFormData(item);
     setShow(true);
   };
@@ -87,7 +78,7 @@ const Inventory = () => {
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
-              <td>{availableProducts.find(p => p._id === item.product)?.name || "Desconocido"}</td>
+              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Desconocido"}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(item)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(item._id)}>Eliminar</Button>
@@ -105,7 +96,7 @@ const Inventory = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Producto</Form.Label>
-              <Form.Select name="productId" value={formData.product} onChange={handleChange}>
+              <Form.Select name="product" value={formData.product} onChange={handleChange}>
                 <option value="">Seleccione un producto</option>
                 {availableProducts.map(product => (
                   <option key={product._id} value={product._id}>{product.name}</option>
@@ -118,11 +109,11 @@ const Inventory = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock Mínimo</Form.Label>
-              <Form.Control type="number" name="stockMin" value={formData.minimunStock} onChange={handleChange} />
+              <Form.Control type="number" name="minimunStock" value={formData.minimunStock} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock Máximo</Form.Label>
-              <Form.Control type="number" name="stockMax" value={formData.maximunStock} onChange={handleChange} />
+              <Form.Control type="number" name="maximunStock" value={formData.maximunStock} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
