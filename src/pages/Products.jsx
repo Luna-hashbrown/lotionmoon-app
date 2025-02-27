@@ -1,32 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Button, Container, Row, Col, Form, Modal } from "react-bootstrap";
 import '../styles/Products.css';
+
+import { getProducts, createProduct, updateProduct, deleteProduct} from "../services/ApiService";
 
 const Products = () => {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({ id: null, nameProduct: "", price: "", brand: "", description: "" });
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Miss Dior",
-      brand: "Dior",
-      price: 25000,
-      description: "Perfume para mujer con notas elegantes.",
-      image: "https://www.dior.com/on/demandware.static/-/Sites-master_dior/default/dwbf948b56/Y0997166/Y0997166_C099700897_E01_GHC.jpg"
-    },
-    {
-      id: 2,
-      name: "Le Men",
-      brand: "Jean Paul Gaulthier",
-      price: 15000,
-      description: "Perfume para hombre rico.",
-      image: "https://m.media-amazon.com/images/I/51RCRxeAjCL._AC_UF1000,1000_QL80_.jpg"
-    }
-  ]);
-  
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getProducts();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
+
   const handleClose = () => setShow(false);
-  const handleShow = (client = { id: null, name: "", email: "" }) => {
-    setFormData(client);
+  const handleShow = (product = { id: null, nameProduct: "", price: "", brand: "", description: "" }) => {
+    setFormData(product);
     setShow(true);
   };
 
@@ -34,14 +27,32 @@ const Products = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (formData.id) {
-      
-      setProducts(products.map(c => c.id === formData.id ? formData : c));
+      try {
+        const updatedProduct = await updateProduct(formData.id, formData);
+        setProducts(products.map(p => p.id === formData.id ? updatedProduct.product : p));
+      } catch (error) {
+        console.error("Error al actualizar el producto", error);
+      }
     } else {
-      setProducts([...products, { ...formData, id: Date.now() }]);
+      try {
+        const newProduct = await createProduct(formData);
+        setProducts([...products, newProduct]);
+      } catch (error) {
+        console.error("Error al crear el producto", error);
+      }
     }
     handleClose();
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteProduct(id);
+      setProducts(products.filter(product => product.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar el producto", error);
+    }
   };
 
   return (
@@ -60,15 +71,17 @@ const Products = () => {
       {/* Fila de productos */}
       <Row>
         {products.map(product => (
-          <Col key={product.id} md={4} className="mb-4">
-            <Card className="product-card"> 
-              <Card.Img variant="top" src={product.image} style={{ width: "150px", height: "150px", objectFit: "cover", margin: "auto" }}/>
+          <Col key={product._id} md={4} className="mb-4">
+            <Card className="product-card">
+              <Card.Img variant="top" src={product.image} style={{ width: "150px", height: "150px", objectFit: "cover", margin: "auto" }} />
               <Card.Body>
-                <Card.Title>{product.name}</Card.Title>
+                <Card.Title>{product.nameProduct}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{product.brand}</Card.Subtitle>
                 <Card.Text>{product.description}</Card.Text>
                 <h5>${product.price} MXN</h5>
                 <Button variant="primary">Comprar</Button>
+                <Button variant="danger" onClick={() => handleDelete(product._id)}>Eliminar</Button>
+                <Button variant="secondary" onClick={() => handleShow(product)}>Editar</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -76,7 +89,7 @@ const Products = () => {
       </Row>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{formData.id ? "Editar Cliente" : "Agregar Cliente"}</Modal.Title>
+          <Modal.Title>{formData.id ? "Editar Producto" : "Agregar Producto"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
