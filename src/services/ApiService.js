@@ -11,3 +11,18 @@ export const getClients = async () => {
     return []; 
   }
 };
+
+export const getEmployees = async () => {
+  const response = await axios.get(`${API_BASE_URL}/employee`);
+  return response.data.employees;
+};
+
+export const getSales = async () => {
+  const response = await axios.get(`${API_BASE_URL}/sale`);
+  return response.data.sales;
+}
+
+export const getPurchases = async () => {
+  const response = await axios.get(`${API_BASE_URL}/purchase`);
+  return response.data.purchases;
+}
