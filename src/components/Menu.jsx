@@ -24,6 +24,9 @@ const Menu = () => {
           <li><Link to="/clients" className="nav-link">Clientes</Link></li>
           <li><Link to="/inventory" className="nav-link">Inventario</Link></li>
           <li><Link to="/products" className="nav-link">Productos</Link></li>
+          <li><Link to="/employees" className="nav-link">Empleados</Link></li>
+          <li><Link to="/sales" className="nav-link">Ventas</Link></li>
+          <li><Link to="/purchases" className="nav-link">Compras</Link></li>
         </ul>
       </div>
     </div>
