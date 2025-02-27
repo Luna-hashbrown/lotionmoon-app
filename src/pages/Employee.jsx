@@ -32,10 +32,9 @@ const Employees = () => {
 
   const handleSubmit = () => {
     if (formData.id) {
-      // Si el empleado ya existe, lo actualizamos
+
       setEmployees(employees.map(emp => emp.id === formData.id ? formData : emp));
     } else {
-      // Si es nuevo, lo agregamos con un ID único
       setEmployees([...employees, { ...formData, id: Date.now() }]);
     }
     handleClose();
@@ -56,7 +55,7 @@ const Employees = () => {
             <th>Nombre</th>
             <th>Correo</th>
             <th>Contraseña</th>
-            <th>Acciones</th> {/* Nueva columna para editar/eliminar */}
+            <th>Acciones</th> 
           </tr>
         </thead>
         <tbody>

@@ -90,8 +90,8 @@ const Purchases = () => {
               <td>{purchase.creationPurchase}</td>
               <td>{purchase.total}</td>
               <td>{purchase.provider}</td>
-              <td>{employees.find(e => e.id === purchase.employeeid)?.name || "Desconocido"}</td>
-              <td>{inventories.find(i => i.id === purchase.inventoryid)?.name || "Desconocido"}</td>
+              <td>{purchase.employeeID}</td>
+              <td>{purchase.inventoryID}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(purchase)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(purchase.id)}>Eliminar</Button>
@@ -120,22 +120,12 @@ const Purchases = () => {
               <Form.Control type="text" name="provider" value={formData.provider} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Empleado</Form.Label>
-              <Form.Select name="employeeid" value={formData.employeeid} onChange={handleChange}>
-                <option value="">Seleccione un empleado</option>
-                {employees.map(employee => (
-                  <option key={employee.id} value={employee.id}>{employee.name}</option>
-                ))}
-              </Form.Select>
+              <Form.Label>ID Empleado</Form.Label>
+              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Inventario</Form.Label>
-              <Form.Select name="inventoryid" value={formData.inventoryid} onChange={handleChange}>
-                <option value="">Seleccione un inventario</option>
-                {inventories.map(inventory => (
-                  <option key={inventory.id} value={inventory.id}>{inventory.name}</option>
-                ))}
-              </Form.Select>
+              <Form.Label>ID Inventario</Form.Label>
+              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
