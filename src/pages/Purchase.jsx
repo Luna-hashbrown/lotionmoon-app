@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getPurchases } from "../services/ApiService";
+import { getPurchases, getEmployees, getInventory } from "../services/ApiService";
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [inventories, setInventories] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     id: null,
@@ -15,16 +17,21 @@ const Purchases = () => {
   });
 
   useEffect(() => {
-    const fetchPurchases = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getPurchases();
-        console.log("Datos recibidos de la API:", data);
-        setPurchases(Array.isArray(data) ? data : []);
+        const [purchasesData, employeesData, inventoriesData] = await Promise.all([
+          getPurchases(),
+          getEmployees(),
+          getInventory(),
+        ]);
+        setPurchases(Array.isArray(purchasesData) ? purchasesData : []);
+        setEmployees(Array.isArray(employeesData) ? employeesData : []);
+        setInventories(Array.isArray(inventoriesData) ? inventoriesData : []);
       } catch (error) {
-        console.error("Error fetching purchases:", error);
+        console.error("Error fetching data:", error);
       }
     };
-    fetchPurchases();
+    fetchData();
   }, []);
 
   const handleClose = () => setShow(false);
@@ -62,17 +69,17 @@ const Purchases = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center">Gestión de Compras</h1>
+      <h1 className="text-center">Gestión de Compras</h1>
       <Button className="mb-3" onClick={() => handleShow()}>Agregar Compra</Button>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Fecha de Creación</th>
+            <th>Fecha de Creación</th>
             <th>Total</th>
             <th>Proveedor</th>
-            <th>ID Empleado</th>
-            <th>ID Inventario</th>
+            <th>Empleado</th>
+            <th>Inventario</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -83,8 +90,8 @@ const Purchases = () => {
               <td>{purchase.creationPurchase}</td>
               <td>{purchase.total}</td>
               <td>{purchase.provider}</td>
-              <td>{purchase.employeeid}</td>
-              <td>{purchase.inventoryid}</td>
+              <td>{purchase.employeeID}</td>
+              <td>{purchase.inventoryID}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(purchase)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(purchase.id)}>Eliminar</Button>
@@ -101,7 +108,7 @@ const Purchases = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Fecha de Creación</Form.Label>
+              <Form.Label>Fecha de Creación</Form.Label>
               <Form.Control type="date" name="creationPurchase" value={formData.creationPurchase} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -114,11 +121,11 @@ const Purchases = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Empleado</Form.Label>
-              <Form.Control type="number" name="employeeid" value={formData.employeeid} onChange={handleChange} />
+              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>ID Inventario</Form.Label>
-              <Form.Control type="number" name="inventoryid" value={formData.inventoryid} onChange={handleChange} />
+              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>

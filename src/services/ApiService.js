@@ -93,17 +93,141 @@ export const deleteInventory = async (idClient) => {
   await axios.delete(`${API_BASE_URL}/inventory-delete/${idClient}`);
 };
 
-export const getEmployees = async () => {
-  const response = await axios.get(`${API_BASE_URL}/employee`);
-  return response.data;
-};
+
+
+//ENDPOINTS VENTA
 
 export const getSales = async () => {
-  const response = await axios.get(`${API_BASE_URL}/sale`);
-  return response.data;
-}
+  try {
+    const response = await axios.get(`${API_BASE_URL}/sale`);
+    return response.data;
+  } catch (error) {
+    console.error("Error obteniendo ventas:", error);
+    return [];
+  }
+};
+
+export const createSale = async (saleData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/sale-create`, saleData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creando venta:", error);
+    throw error;
+  }
+};
+
+export const updateSaleById = async (idSale, saleData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/sale-update/${idSale}`, saleData);
+    return response.data;
+  } catch (error) {
+    console.error("Error actualizando venta:", error);
+    throw error;
+  }
+};
+
+export const deleteSale = async (idSale) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/sale-delete/${idSale}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error eliminando venta:", error);
+    throw error;
+  }
+};
+
+
+//ENDPOINTS COMPRA
 
 export const getPurchases = async () => {
-  const response = await axios.get(`${API_BASE_URL}/purchase`);
-  return response.data;
-}
+  try {
+    const response = await axios.get(`${API_BASE_URL}/purchase`);
+    return response.data;
+  } catch (error) {
+    console.error("Error obteniendo compras:", error);
+    return [];
+  }
+};
+
+export const createPurchase = async (purchaseData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/purchase-create`, purchaseData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creando compra:", error);
+    throw error;
+  }
+};
+
+export const updatePurchaseById = async (idPurchase, purchaseData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/purchase-update/${idPurchase}`, purchaseData);
+    return response.data;
+  } catch (error) {
+    console.error("Error actualizando compra:", error);
+    throw error;
+  }
+};
+
+export const deletePurchase = async (idPurchase) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/purchase-delete/${idPurchase}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error eliminando compra:", error);
+    throw error;
+  }
+};
+
+//ENDPOINTS EMPLEADO
+
+export const getEmployees = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/employee`);
+    return response.data;
+  } catch (error) {
+    console.error("Error obteniendo empleados:", error);
+    return [];
+  }
+};
+
+export const getEmployeeById = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/employee/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error obteniendo empleado:", error);
+    throw error;
+  }
+};
+
+export const createEmployee = async (employeeData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/employee-create`, employeeData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creando empleado:", error);
+    throw error;
+  }
+};
+
+export const updateEmployee = async (id, employeeData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/employee-update/${id}`, employeeData);
+    return response.data;
+  } catch (error) {
+    console.error("Error actualizando empleado:", error);
+    throw error;
+  }
+};
+
+export const deleteEmployee = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/employee-delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error eliminando empleado:", error);
+    throw error;
+  }
+};
