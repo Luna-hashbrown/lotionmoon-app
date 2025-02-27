@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getInventory, createInventory, updateInventory, deleteInventory } from "../services/ApiService";
+import { getInventory, createInventory, updateInventory, deleteInventory, getProducts } from "../services/ApiService";
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
+  const [availableProducts, setAvailableProducts] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({ stock: "", minimunStock: "", maximunStock: "", product: "" });
 
   useEffect(() => {
-    const fetchInventory = async () => {
+    const fetchData = async () => {
       try {
+        const inventoryData = await getInventory();
+        setInventory(inventoryData || []);
+
+        const productsData = await getProducts();
+        setAvailableProducts(productsData || []);
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+      }
+    };
+
+    fetchData();
         const data = await getInventory();
         setInventory(data || []);
       } catch (error) {
@@ -17,7 +29,6 @@ const Inventory = () => {
         console.error("Error al obtener inventario:", error);
       }
     };
-
     fetchInventory();
   }, []);
 
@@ -77,7 +88,7 @@ const Inventory = () => {
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
-              <td>{item.product}</td> {/* Solo mostramos el ID o nombre del producto como está en el inventario */}
+              <td>{availableProducts.find(p => p._id === item.product)?.productName || "Desconocido"}</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleShow(item)}>Editar</Button>
                 <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(item._id)}>Eliminar</Button>
@@ -95,8 +106,14 @@ const Inventory = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Producto</Form.Label>
+              <Form.Select name="product" value={formData.product} onChange={handleChange}>
+                <option value="">Seleccione un producto</option>
+                {availableProducts.map(product => (
+                  <option key={product._id} value={product._id}>{product.name}</option>
+                ))}
+              </Form.Select>
               <Form.Control type="text" name="product" value={formData.product} onChange={handleChange} />
-            </Form.Group>
+           </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock</Form.Label>
               <Form.Control type="number" name="stock" value={formData.stock} onChange={handleChange} />
