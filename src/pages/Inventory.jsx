@@ -22,14 +22,6 @@ const Inventory = () => {
     };
 
     fetchData();
-        const data = await getInventory();
-        setInventory(data || []);
-      } catch (error) {
-        alert("❌ Error al obtener el inventario.");
-        console.error("Error al obtener inventario:", error);
-      }
-    };
-    fetchInventory();
   }, []);
 
   const handleClose = () => setShow(false);
@@ -53,7 +45,6 @@ const Inventory = () => {
       }
       handleClose();
     } catch (error) {
-      alert("❌ Error al guardar el inventario. Inténtalo de nuevo.");
       console.error("Error al guardar el inventario:", error);
     }
   };
@@ -63,7 +54,6 @@ const Inventory = () => {
       await deleteInventory(id);
       setInventory(inventory.filter(item => item._id !== id));
     } catch (error) {
-      alert("❌ Error al eliminar el inventario. Inténtalo de nuevo.");
       console.error("Error al eliminar el inventario:", error);
     }
   };
@@ -112,8 +102,7 @@ const Inventory = () => {
                   <option key={product._id} value={product._id}>{product.name}</option>
                 ))}
               </Form.Select>
-              <Form.Control type="text" name="product" value={formData.product} onChange={handleChange} />
-           </Form.Group>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Stock</Form.Label>
               <Form.Control type="number" name="stock" value={formData.stock} onChange={handleChange} />
@@ -138,6 +127,3 @@ const Inventory = () => {
 };
 
 export default Inventory;
-
-
-
