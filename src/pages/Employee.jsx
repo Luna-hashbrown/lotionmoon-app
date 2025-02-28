@@ -5,7 +5,7 @@ import { getEmployees } from "../services/ApiService";
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({ id: null, name: "", email: "", contrasena: "" });
+  const [formData, setFormData] = useState({ id: null, employeeName: "", email: "", contrasena: "" });
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -21,7 +21,7 @@ const Employees = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (employee = { id: null, name: "", email: "", contrasena: "" }) => {
+  const handleShow = (employee = { id: null, employeeName: "", email: "", contrasena: "" }) => {
     setFormData(employee);
     setShow(true);
   };
@@ -60,9 +60,9 @@ const Employees = () => {
         </thead>
         <tbody>
           {employees.map(employee => (
-            <tr key={employee.id}>
-              <td>{employee.id}</td>
-              <td>{employee.name}</td>
+            <tr key={employee._id}>
+              <td>{employee._id}</td>
+              <td>{employee.employeeName}</td>
               <td>{employee.email}</td>
               <td>{employee.contrasena}</td>
               <td>

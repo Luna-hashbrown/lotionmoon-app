@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getPurchases, getEmployees, getInventory } from "../services/ApiService";
+import { getPurchases, getEmployees, getInventory, createPurchase } from "../services/ApiService";
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -8,12 +8,11 @@ const Purchases = () => {
   const [inventories, setInventories] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
-    id: null,
-    creationPurchase: "",
     total: "",
     provider: "",
-    employeeid: "",
-    inventoryid: "",
+    employeeID: "",
+    inventoryID: "",
+    quantity: 1, // Inicializado en 1
   });
 
   useEffect(() => {
@@ -35,66 +34,64 @@ const Purchases = () => {
   }, []);
 
   const handleClose = () => setShow(false);
-  const handleShow = (purchase = { id: null, creationPurchase: "", total: "", provider: "", employeeid: "", inventoryid: "" }) => {
-    setFormData(purchase);
+  const handleShow = () => {
+    setFormData({ total: "", provider: "", employeeID: "", inventoryID: "", quantity: 1 });
     setShow(true);
   };
 
   const handleChange = (e) => {
     let { name, value } = e.target;
-    if (name === "creationPurchase") {
-      value = value.split("T")[0];
-    }
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    const formattedData = {
-      ...formData,
-      creationPurchase: formData.creationPurchase.split("T")[0],
-    };
+  const handleCreatePurchase = async () => {
+    try {
+      const purchaseData = {
+        products: [{ 
+          inventoryID: formData.inventoryID, 
+          quantity: parseInt(formData.quantity, 10) // Convertimos a número entero
+        }],
+        total: parseFloat(formData.total), // Convertimos a número decimal
+        provider: formData.provider,
+        employeeID: formData.employeeID
+      };
 
-    if (formattedData.id) {
-      setPurchases(purchases.map(purchase => purchase.id === formattedData.id ? formattedData : purchase));
-    } else {
-      setPurchases([...purchases, { ...formattedData, id: Date.now() }]);
+      const newPurchase = await createPurchase(purchaseData);
+      setPurchases([...purchases, newPurchase]);
+      handleClose();
+    } catch (error) {
+      console.error("Error al crear la compra:", error);
     }
-
-    handleClose();
-  };
-
-  const handleDelete = (id) => {
-    setPurchases(purchases.filter(purchase => purchase.id !== id));
   };
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center">Gestión de Compras</h1>
-      <Button className="mb-3" onClick={() => handleShow()}>Agregar Compra</Button>
+      <h1 className="text-center">Gestión de Compras</h1>
+      <Button className="mb-3" onClick={handleShow}>Agregar Compra</Button>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Fecha de Creación</th>
             <th>Total</th>
             <th>Proveedor</th>
             <th>Empleado</th>
             <th>Inventario</th>
+            <th>Cantidad</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {purchases.map(purchase => (
-            <tr key={purchase.id}>
-              <td>{purchase.id}</td>
-              <td>{purchase.creationPurchase}</td>
+            <tr key={purchase._id}>
+              <td>{purchase._id}</td>
               <td>{purchase.total}</td>
               <td>{purchase.provider}</td>
-              <td>{purchase.employeeID}</td>
-              <td>{purchase.inventoryID}</td>
               <td>
-                <Button variant="warning" size="sm" onClick={() => handleShow(purchase)}>Editar</Button>
-                <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(purchase.id)}>Eliminar</Button>
+                {employees.find(e => e._id === purchase.employeeID)?.employeeName || "Desconocido"}
+              </td>
+              <td>{inventories.find(i => i.id === purchase.inventoryID)?.product.productName || "Desconocido"}</td>
+              <td>
+                {purchase.products?.length > 0 ? purchase.products[0].quantity : "N/A"}
               </td>
             </tr>
           ))}
@@ -103,14 +100,10 @@ const Purchases = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{formData.id ? "Editar Compra" : "Agregar Compra"}</Modal.Title>
+          <Modal.Title>Agregar Compra</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Fecha de Creación</Form.Label>
-              <Form.Control type="date" name="creationPurchase" value={formData.creationPurchase} onChange={handleChange} />
-            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Total</Form.Label>
               <Form.Control type="number" step="0.01" name="total" value={formData.total} onChange={handleChange} />
@@ -120,18 +113,40 @@ const Purchases = () => {
               <Form.Control type="text" name="provider" value={formData.provider} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>ID Empleado</Form.Label>
-              <Form.Control type="number" name="employeeID" value={formData.employeeID} onChange={handleChange} />
+              <Form.Label>Empleado</Form.Label>
+              <Form.Select name="employeeID" value={formData.employeeID} onChange={handleChange}>
+                <option value="">Seleccione un empleado</option>
+                {employees.map(employee => (
+                  <option key={employee._id} value={employee._id}>{employee.employeeName}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>ID Inventario</Form.Label>
-              <Form.Control type="number" name="inventoryID" value={formData.inventoryID} onChange={handleChange} />
+              <Form.Label>Inventario</Form.Label>
+              <Form.Select name="inventoryID" value={formData.inventoryID} onChange={handleChange}>
+                <option value="">Seleccione un inventario</option>
+                {inventories.map(inventory => (
+                  <option key={inventory._id} value={inventory._id}>
+                    {inventory.product?.productName || "Desconocido"}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control 
+                type="number" 
+                name="quantity" 
+                min="1" 
+                value={formData.quantity} 
+                onChange={handleChange} 
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-          <Button variant="primary" onClick={handleSubmit}>Guardar</Button>
+          <Button variant="primary" onClick={handleCreatePurchase}>Guardar</Button>
         </Modal.Footer>
       </Modal>
     </div>
@@ -139,3 +154,4 @@ const Purchases = () => {
 };
 
 export default Purchases;
+{/* <td>{inventories.find(i => i.id === purchase.inventoryID)?.product.productName || "Desconocido"}</td> */}

@@ -5,17 +5,22 @@ import '../styles/Menu.css';
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef(null); // Referencia para el menú
+  const [isSalesDropdownOpen, setIsSalesDropdownOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // Cierra el menú si se hace clic fuera de él
+  const toggleSalesDropdown = () => {
+    setIsSalesDropdownOpen(!isSalesDropdownOpen);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
+        setIsSalesDropdownOpen(false);
       }
     };
 
@@ -29,7 +34,7 @@ const Menu = () => {
   }, [isOpen]);
 
   return (
-    <div ref={menuRef}>
+    <div ref={menuRef} className="menu-container">
       <button className="btn menu-toggle" onClick={toggleMenu}>
         {isOpen ? <i className="fas fa-times icon-white"></i> : <i className="fas fa-bars icon-black"></i>}
       </button>
@@ -43,11 +48,20 @@ const Menu = () => {
           <li><Link to="/inventory" className="nav-link">Inventario</Link></li>
           <li><Link to="/products" className="nav-link">Productos</Link></li>
           <li><Link to="/employees" className="nav-link">Empleados</Link></li>
-          <li><Link to="/sales" className="nav-link">Ventas</Link></li>
+          <li className="nav-item dropdown">
+            <button className="btn nav-link dropdown-toggle" onClick={toggleSalesDropdown}>
+              Ventas
+            </button>
+            <ul className={`dropdown-menu ${isSalesDropdownOpen ? 'show' : ''} shadow-sm`}>
+              <li><Link to="/sales/create" className="dropdown-item">Crear Venta</Link></li>
+              <li><Link to="/sales" className="dropdown-item">Ver Ventas</Link></li>
+            </ul>
+          </li>
           <li><Link to="/purchases" className="nav-link">Compras</Link></li>
         </ul>
       </div>
     </div>
   );
 };
+
 export default Menu;

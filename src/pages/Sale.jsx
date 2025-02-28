@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
 import { getSales, getClients, getEmployees, getInventory } from "../services/ApiService";
+import { useNavigate } from "react-router-dom";
 
 const Sales = () => {
+  const navigate = useNavigate();
   const [sales, setSales] = useState([]);
   const [clients, setClients] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -68,7 +70,9 @@ const Sales = () => {
   return (
     <div className="container mt-4">
       <h1 className="text-center">Gestión de Ventas</h1>
-      <Button className="mb-3" onClick={() => handleShow()}>Agregar Venta</Button>
+      <Button className="mb-3" onClick={() => navigate("/sales/create")}>
+        Agregar Venta
+      </Button>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -82,34 +86,34 @@ const Sales = () => {
           </tr>
         </thead>
         <tbody>
-          {sales.map(sale => (
-            <tr key={sale._id}>
-              <td>{sale._id}</td>
-              <td>{sale.creationDate}</td>
-              <td>{sale.total}</td>
-              <td>{clients.find(c => c._id === sale.clientID)?.clientName || "Desconocido"}</td>
-              <td>{employees.find(e => e._id === sale.employeeID)?.employeeName || "Desconocido"}</td>
-              <td>
-                {sale.products?.length > 0 ? (
-                  sale.products.map((p, index) => {
-                    const inventory = inventories.find(i => i._id === p.inventoryID);
-                    return (
-                      <div key={index}>
-                        {inventory?.product?.productName || "Desconocido"}
-                      </div>
-                    );
-                  })
-                ) : (
-                  "Sin productos"
-                )}
-              </td>
-              <td>
-                <Button variant="warning" sizes="sm" onClick={() => handleShow(sale)}>Editar</Button>
-                <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(sale.id)}>Eliminar</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+            {sales.map(sale => (
+              <tr key={sale._id}>
+                <td>{sale._id}</td>
+                <td>{new Date(sale.creationDate).toLocaleDateString()}</td>
+                <td>${sale.total}</td>
+                <td>{sale.clientID?.clientName || "Desconocido"}</td>
+                <td>{sale.employeeID?.employeeName || "Desconocido"}</td>
+                <td>
+                  {sale.products?.length > 0 ? (
+                    sale.products.map((p, index) => {
+                      const productName = p.inventoryID?.product?.productName || "Desconocido";
+                      return (
+                        <div key={index}>
+                          {productName} - Cantidad: {p.quantity}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    "Sin productos"
+                  )}
+                </td>
+                <td>
+                  <Button variant="warning" size="sm" onClick={() => handleShow(sale)}>Editar</Button>
+                  <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(sale._id)}>Eliminar</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
       </Table>
 
       <Modal show={show} onHide={handleClose}>

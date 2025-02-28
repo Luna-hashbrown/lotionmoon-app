@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Modal } from "react-bootstrap";
-import { getInventory, createInventory, updateInventory, deleteInventory, getProducts } from "../services/ApiService";
+import { getInventory, createInventory, updateInventory, deleteInventory } from "../services/ApiService";
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -14,8 +14,6 @@ const Inventory = () => {
         const inventoryData = await getInventory();
         setInventory(inventoryData || []);
 
-        const productsData = await getProducts();
-        setAvailableProducts(productsData || []);
       } catch (error) {
         console.error("Error al obtener datos:", error);
       }
@@ -75,7 +73,7 @@ const Inventory = () => {
         <tbody>
           {inventory.map(item => (
             <tr key={item._id}>
-              <td>{item.product.productName || "Producto Eliminado"}</td>
+              <td>{item.product?.productName || "Producto Eliminado"}</td>
               <td>{item.stock}</td>
               <td>{item.minimunStock}</td>
               <td>{item.maximunStock}</td>
