@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { getInventory, getClients, getEmployees, createSale } from "../services/ApiService"; 
+import { Alert } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const CreateSale = ({ onSaleCreated }) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -10,6 +12,7 @@ const CreateSale = ({ onSaleCreated }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -74,10 +77,15 @@ const CreateSale = ({ onSaleCreated }) => {
     };
     console.log("Selected Products:", selectedProducts);
     console.log("Sale Data:", saleData);
+    
     try {
       await createSale(saleData);
-      
+      setShowSuccessAlert(true);
       onSaleCreated();
+
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
     } catch (error) {
       console.error("Error creating sale:", error);
     }
@@ -86,7 +94,11 @@ const CreateSale = ({ onSaleCreated }) => {
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Crear Venta</h2>
-
+      {showSuccessAlert && (
+        <Alert variant="outlined" severity="success">
+          Venta realizada con éxito
+        </Alert>
+      )}
       <Form.Group className="mb-3">
         <Form.Label>Cliente</Form.Label>
         <Form.Select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
@@ -153,6 +165,10 @@ const CreateSale = ({ onSaleCreated }) => {
 
       <Button className="btn btn-success" onClick={handleCreateSale}>
         Crear Venta
+      </Button>
+
+      <Button className="btn btn-dark">
+       <Link to="/sales" className="dropdown-item">Ver Ventas</Link>
       </Button>
 
       {isModalOpen && (
