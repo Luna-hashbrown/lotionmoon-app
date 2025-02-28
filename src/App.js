@@ -10,6 +10,7 @@ import Sale from "./pages/Sale";
 import Purchase from "./pages/Purchase";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import CreateSale from "./pages/CreateSale";
 
 
 
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/employees" element={<Employee />} />
         <Route path="/sales" element={<Sale />} />
+        <Route path="/sales/create" element={<CreateSale/>}/>
         <Route path="/purchases" element={<Purchase />} />
       </Routes>
     </div>
